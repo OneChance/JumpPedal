@@ -11,9 +11,10 @@ public class PlayerControl : MonoBehaviour
 		private Transform myTransform;
 		private float moveSpeed = 30f;
 		private static float pedalCreateIncre = 0.1f;
-		private float onePedalWidth = 0.41f;
+		private float onePedalWidth;
+		private float onePedalHeight;
 		private Vector3 pedalStart;
-		
+		private float pedalCheckOffset = 0.05f;
 
 		enum ClickPos
 		{  
@@ -27,6 +28,8 @@ public class PlayerControl : MonoBehaviour
 		{
 				pa = GetComponent<PlayerAttribute> ();
 				myTransform = transform;
+				onePedalWidth = pedal.renderer.bounds.size.x;
+				onePedalHeight = pedal.renderer.bounds.size.y;
 		}
 
 		void Update ()
@@ -66,11 +69,61 @@ public class PlayerControl : MonoBehaviour
 
 				int dir = start.x > end.x ? -1 : 1;
 
-				for (int i=0; i<createNum; i++) {
-						GameObject one = Instantiate (pedal, new Vector3 (start.x + i * dir * onePedalWidth / 2, start.y, -1), Quaternion.identity) as GameObject;
+				int createdNum = 0;
+
+				for (int i=1; i<=createNum; i++) {
+
+						if (!Createable (new Vector2 (start.x + (i - 1) * dir * onePedalWidth + dir * pedalCheckOffset, start.y), dir)) {
+								break;
+						}	
+
+						GameObject one = Instantiate (pedal, new Vector3 (start.x + (i - 1) * dir * onePedalWidth + dir * onePedalWidth / 2, start.y, -1), Quaternion.identity) as GameObject;
+						createdNum++;
 				}
 				
-				pedalCap -= createNum;
+				pedalCap -= createdNum;
+		}
+
+		bool Createable (Vector2 checkStart, int dir)
+		{
+				if (!SideCheck (new Vector2 (checkStart.x, checkStart.y + onePedalHeight / 2), dir) && !SideCheck (new Vector2 (checkStart.x, checkStart.y - onePedalHeight / 2), dir) && !CreateBoundCheck (new Vector2 (checkStart.x, checkStart.y), dir)) {
+						return true;
+				} else {
+						return false;
+				}
+		}
+
+		bool CreateBoundCheck (Vector2 checkStart, int dir)
+		{
+				Vector3 boundLeft = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
+				Vector3 boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
+
+				if (dir < 0) {
+						if (Vector2.Distance (checkStart, new Vector2 (boundLeft.x, checkStart.y)) < (onePedalWidth/2)) {
+								return true;
+						}
+				} else {
+						if (Vector2.Distance (checkStart, new Vector2 (boundRight.x, checkStart.y)) < (onePedalWidth/2)) {
+								return true;
+						}
+				}
+
+				return false;
+		}
+
+		bool SideCheck (Vector2 rayStart, int dir)
+		{
+
+				RaycastHit2D hit = Physics2D.Raycast (rayStart, Vector3.right * dir);
+				if (hit != null && hit.transform != null) {
+						if (hit.transform.tag == Tags.pedal) {
+								if (Vector2.Distance (rayStart, new Vector2 (hit.transform.position.x, hit.transform.position.y)) < (3f / 2f * onePedalWidth)) {
+										return true;
+								}
+						}
+				}
+
+				return false;
 		}
 
 		void JumpAndMove (Vector3 clickPosition)
@@ -81,6 +134,7 @@ public class PlayerControl : MonoBehaviour
 								rigidbody2D.AddForce (Vector3.up * jumpDirection.y * pa.jumpAbility);
 								grounded = false;
 						}
+
 						rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);
 				}
 				
