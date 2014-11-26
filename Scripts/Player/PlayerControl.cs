@@ -15,6 +15,8 @@ public class PlayerControl : MonoBehaviour
 		private float onePedalHeight;
 		private Vector3 pedalStart;
 		private float pedalCheckOffset = 0.05f;
+		private WeatherControll weatherControll;
+		private float playerWidth;
 
 		enum ClickPos
 		{  
@@ -30,6 +32,8 @@ public class PlayerControl : MonoBehaviour
 				myTransform = transform;
 				onePedalWidth = pedal.renderer.bounds.size.x;
 				onePedalHeight = pedal.renderer.bounds.size.y;
+				playerWidth = myTransform.gameObject.renderer.bounds.size.x;
+				weatherControll = GameObject.FindGameObjectWithTag (Tags.gameController).GetComponent<WeatherControll> ();
 		}
 
 		void Update ()
@@ -58,6 +62,7 @@ public class PlayerControl : MonoBehaviour
 				
 				}
 				
+				WindMove ();
 				BoundCheck ();
 		}
 
@@ -99,11 +104,11 @@ public class PlayerControl : MonoBehaviour
 				Vector3 boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 
 				if (dir < 0) {
-						if (Vector2.Distance (checkStart, new Vector2 (boundLeft.x, checkStart.y)) < (onePedalWidth/2)) {
+						if (Vector2.Distance (checkStart, new Vector2 (boundLeft.x, checkStart.y)) < (onePedalWidth / 2)) {
 								return true;
 						}
 				} else {
-						if (Vector2.Distance (checkStart, new Vector2 (boundRight.x, checkStart.y)) < (onePedalWidth/2)) {
+						if (Vector2.Distance (checkStart, new Vector2 (boundRight.x, checkStart.y)) < (onePedalWidth / 2)) {
 								return true;
 						}
 				}
@@ -126,6 +131,13 @@ public class PlayerControl : MonoBehaviour
 				return false;
 		}
 
+		void WindMove ()
+		{
+				if (weatherControll.windLevel != 0) {
+						rigidbody2D.AddForce (Vector3.right * weatherControll.windLevel * weatherControll.windPower);
+				}			
+		}
+
 		void JumpAndMove (Vector3 clickPosition)
 		{
 				Vector3 jumpDirection = GetJumpDirection (clickPosition);		
@@ -135,21 +147,23 @@ public class PlayerControl : MonoBehaviour
 								grounded = false;
 						}
 
-						rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);
+						rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);						
 				}
-				
 		}
 
+		/// <summary>
+		/// Bounds the check. 角色触碰左右边界时，给予相反方向弹力
+		/// </summary>
 		void BoundCheck ()
 		{
 				Vector3 boundLeft = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
 				Vector3 boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 		
-				if (transform.position.x < boundLeft.x) {
-						rigidbody2D.AddForce (Vector3.right * moveSpeed * 1.1f);
+				if (transform.position.x - playerWidth / 2 < boundLeft.x) {
+						rigidbody2D.AddForce (Vector3.right * moveSpeed * 0.5f);
 				}
-				if (transform.position.x > boundRight.x) {
-						rigidbody2D.AddForce (Vector3.left * moveSpeed * 1.1f);
+				if (transform.position.x + playerWidth / 2 > boundRight.x) {
+						rigidbody2D.AddForce (Vector3.left * moveSpeed * 0.5f);
 				}
 		}
 
