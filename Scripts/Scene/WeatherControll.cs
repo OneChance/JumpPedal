@@ -4,13 +4,13 @@ using System.Collections;
 public class WeatherControll : MonoBehaviour
 {
 
-		public Weather currentWeather;
-		public WindDir windDirection;
-		public float coolDown = 60f;
+		public Weather currentWeather;//当前天气
+		public WindDir windDirection; //风向
+		public float coolDown = 60f; //天气转变间隔
 		public float timer = 0;
-		public int windLevel;
-		public float windPower = 0.5f;
-
+		public int windLevel; //风力级别
+		public float windPower = 0.5f; //风力
+ 
 		public enum Weather
 		{  
 				Normal,
