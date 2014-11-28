@@ -42,8 +42,9 @@ public class ItemControl : MonoBehaviour
 
 						if (currentItemType == ItemType.Iron || currentItemType == ItemType.Wood) {
 								int pedalNum = (int)items.itemList [(PedalControl.PedalTypes)currentItemType];
-								items.itemList.Remove (currentItemType);
-								items.itemList.Add (currentItemType, pedalNum + capNum);
+								items.itemList.Remove ((PedalControl.PedalTypes)currentItemType);
+								items.itemList.Add ((PedalControl.PedalTypes)currentItemType, pedalNum + capNum);
+
 						} else if (currentItemType == ItemType.SpringShoe) {
 								items.springShoe = true;
 						}
@@ -51,4 +52,5 @@ public class ItemControl : MonoBehaviour
 						Destroy (gameObject);
 				}
 		}
+
 }

@@ -11,8 +11,8 @@ public class PedalControl : MonoBehaviour
 
 		public enum PedalTypes
 		{  
-				Iron,
-				Wood
+				Wood,
+				Iron
 		} 
 		
 		void Awake ()

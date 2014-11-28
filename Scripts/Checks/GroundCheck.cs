@@ -13,10 +13,22 @@ public class GroundCheck : MonoBehaviour
 				pc = player.GetComponent<PlayerControl> ();
 		}
 
-		void OnCollisionEnter2D (Collision2D other)
+		void Update ()
+		{
+
+		}
+
+		void OnCollisionStay2D (Collision2D other)
 		{
 				if (other.gameObject.tag == Tags.player) {
 						pc.grounded = true;
+				}
+		}
+
+		void OnCollisionExit2D (Collision2D other)
+		{
+				if (other.gameObject.tag == Tags.player) {
+						pc.grounded = false;
 				}
 		}
 }

@@ -5,7 +5,8 @@ public class PlayerControl : MonoBehaviour
 {
 		public bool pedalCreating = false;
 		public bool grounded;
-		public GameObject pedal;
+		public GameObject ironPedal;
+		public GameObject woodPedal;
 		public PedalControl.PedalTypes currentPedalType; //当前选择的踏板类型
 		private PlayerAttribute pa;
 		private Transform myTransform;
@@ -19,6 +20,7 @@ public class PlayerControl : MonoBehaviour
 		private float playerHeight; //玩家模型高度
 		private Items items; //玩家拥有的道具
 		private GameObject ground; //地面
+		private 
 
 		enum ClickPos
 		{  
@@ -32,13 +34,14 @@ public class PlayerControl : MonoBehaviour
 		{
 				pa = GetComponent<PlayerAttribute> ();
 				myTransform = transform;
-				onePedalWidth = pedal.renderer.bounds.size.x;
-				onePedalHeight = pedal.renderer.bounds.size.y;
+				onePedalWidth = ironPedal.renderer.bounds.size.x;
+				onePedalHeight = ironPedal.renderer.bounds.size.y;
 				playerWidth = myTransform.gameObject.renderer.bounds.size.x;
 				playerHeight = myTransform.gameObject.renderer.bounds.size.y;
 				weatherControll = GameObject.FindGameObjectWithTag (Tags.gameController).GetComponent<WeatherControll> ();
 				items = GetComponent<Items> ();
 				ground = GameObject.FindGameObjectWithTag (Tags.ground);
+				grounded = true;
 		}
 
 		void Update ()
@@ -69,11 +72,20 @@ public class PlayerControl : MonoBehaviour
 				
 				WindMove ();
 				BoundCheck ();
+				FallDrag ();
+		}
+		
+		void FallDrag ()
+		{
+				if (rigidbody2D.velocity.y < 0) {
+						rigidbody2D.drag = 2.5f;
+				} else {
+						rigidbody2D.drag = 0;
+				}
 		}
 
 		void CreatePedal (Vector3 start, Vector3 end)
 		{
-
 				int pedalCap = (int)items.itemList [currentPedalType];
 
 				float pedalLength = Mathf.Abs (start.x - end.x);
@@ -84,13 +96,20 @@ public class PlayerControl : MonoBehaviour
 
 				int createdNum = 0;
 
+				GameObject greateType = null;
+
+				if (currentPedalType == PedalControl.PedalTypes.Iron) {
+						greateType = ironPedal;
+				} else if (currentPedalType == PedalControl.PedalTypes.Wood) {
+						greateType = woodPedal;
+				}
+
 				for (int i=1; i<=createNum; i++) {
-						//在结束的高度创建踏板
-						if (!Createable (new Vector2 (start.x + (i - 1) * dir * onePedalWidth + dir * pedalCheckOffset, end.y), dir)) {
+						if (!Createable (new Vector2 (start.x + (i - 1) * dir * onePedalWidth + dir * pedalCheckOffset, start.y), dir)) {
 								break;
 						}	
 
-						Instantiate (pedal, new Vector3 (start.x + (i - 1) * dir * onePedalWidth + dir * onePedalWidth / 2, end.y, -1), Quaternion.identity);
+						Instantiate (greateType, new Vector3 (start.x + (i - 1) * dir * onePedalWidth + dir * onePedalWidth / 2, start.y, -1), Quaternion.identity);
 						
 						createdNum++;
 				}
@@ -143,7 +162,7 @@ public class PlayerControl : MonoBehaviour
 
 				RaycastHit2D hit = Physics2D.Raycast (rayStart, Vector3.right * dir);
 				if (hit.transform != null) {
-						if (hit.transform.tag == Tags.pedal) {
+						if (hit.transform.tag == Tags.pedal || hit.transform.tag == Tags.player) {
 								if (Vector2.Distance (rayStart, new Vector2 (hit.transform.position.x, hit.transform.position.y)) < (3f / 2f * onePedalWidth)) {
 										return true;
 								}
@@ -166,7 +185,6 @@ public class PlayerControl : MonoBehaviour
 				if (grounded) {		
 						if (jumpDirection.y > 0) {
 								rigidbody2D.AddForce (Vector3.up * jumpDirection.y * pa.jumpAbility);
-								grounded = false;
 						}
 
 						if (jumpDirection.y >= 0) {

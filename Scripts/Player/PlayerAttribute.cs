@@ -7,7 +7,7 @@ public class PlayerAttribute : MonoBehaviour
 		public float health = 100f;
 		public float jumpAbility;
 		private Items items;
-		private float JumpAbilityNormal = 250f;
+		public float JumpAbilityNormal;
 		public float itemsTimer;
 
 		void Awake ()
