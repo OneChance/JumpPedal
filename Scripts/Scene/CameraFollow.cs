@@ -28,8 +28,10 @@ public class CameraFollow : MonoBehaviour
 
 				} else {
 						curDistanceAdd = 3f;
-						curSpeed = moveSpeed / 10f;
+                        curSpeed = moveSpeed / 10f;
+                        curSpeed *= Mathf.Abs(player.rigidbody2D.velocity.y);
 				}
+           
 
 				Vector3 newPos = new Vector3 (transform.position.x, player.transform.position.y - relDistance - curDistanceAdd, transform.position.z);
 				transform.position = Vector3.Lerp (transform.position, newPos, Time.deltaTime * curSpeed);
