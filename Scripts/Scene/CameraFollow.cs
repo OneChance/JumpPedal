@@ -29,7 +29,7 @@ public class CameraFollow : MonoBehaviour
 				} else {
 						curDistanceAdd = 3f;
                         curSpeed = moveSpeed / 10f;
-                        curSpeed *= Mathf.Abs(player.rigidbody2D.velocity.y);
+                        curSpeed *= Mathf.Abs(player.rigidbody2D.velocity.y*2);
 				}
            
 

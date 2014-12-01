@@ -35,7 +35,9 @@ public class InputMethod : MonoBehaviour
 				Vector3 clickPos = nullPosition;
 		
 				if (isMP) {
-
+						if (Input.GetTouch (0).phase == TouchPhase.Ended) {
+								clickPos = Input.GetTouch (0).position;
+						}
 				} else {
 						if (Input.GetMouseButtonUp (0)) {
 								clickPos = Input.mousePosition;
