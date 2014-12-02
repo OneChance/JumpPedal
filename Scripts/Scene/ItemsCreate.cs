@@ -42,7 +42,6 @@ public class ItemsCreate : MonoBehaviour
 						if (currentItem != null && currentItem.transform.position.y > player.transform.position.y + cameraHeight) {
 								Destroy (currentItem);
 						}
-
 				} else {
 						createDirection = 1;
 				}

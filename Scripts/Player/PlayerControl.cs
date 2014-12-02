@@ -20,7 +20,8 @@ public class PlayerControl : MonoBehaviour
 		private float playerHeight; //玩家模型高度
 		private Items items; //玩家拥有的道具
 		private GameObject ground; //地面
-		private 
+		public GameObject groundEffect;
+
 
 		enum ClickPos
 		{  
@@ -73,6 +74,7 @@ public class PlayerControl : MonoBehaviour
 				WindMove ();
 				BoundCheck ();
 				FallDrag ();
+				GroundCheck ();
 		}
 		
 		void FallDrag ()
@@ -224,9 +226,7 @@ public class PlayerControl : MonoBehaviour
 				} else if (clickPosition.y < myTransform.position.y - playerHeight / 2) {
 						y = -1;  //点击位置低于玩家位置，不可平移
 				}
-
 				return new Vector3 (x, y, 0);
-
 		}
 	
 		public void ChangePedal (int pedalType)
@@ -234,4 +234,25 @@ public class PlayerControl : MonoBehaviour
 				currentPedalType = (PedalControl.PedalTypes)pedalType;
 		}
 
+		void PlayGroundEffect ()
+		{
+				Vector3 effectPos = new Vector3 (myTransform.position.x, myTransform.position.y - playerHeight / 2, myTransform.position.z);
+				GameObject go = Instantiate (groundEffect, effectPos, Quaternion.identity) as GameObject;
+				Destroy (go, 1.5f);
+		}
+	
+		void GroundCheck ()
+		{
+				if (rigidbody2D.velocity.y != 0) {
+						grounded = false;							
+				} else {
+
+						if (grounded == false) {
+								PlayGroundEffect ();
+						}
+				
+						grounded = true;
+						
+				}
+		}
 }

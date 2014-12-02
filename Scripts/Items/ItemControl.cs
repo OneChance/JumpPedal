@@ -9,6 +9,7 @@ public class ItemControl : MonoBehaviour
 		public int capNum = 10; //踏板道具包含的踏板数量
 		private float existTime = 20f; //道具存在时间
 		private float existTimer = 0;
+		public GameObject pickUpEffect;
 
 		public enum ItemType
 		{  
@@ -27,8 +28,15 @@ public class ItemControl : MonoBehaviour
 		{
 				existTimer += Time.deltaTime;
 				if (existTimer >= existTime) {
-						Destroy (gameObject);
+						Destroy (gameObject);		
+						playPickUpEffect ();
 				}
+		}
+
+		void playPickUpEffect ()
+		{
+				GameObject go = Instantiate (pickUpEffect, transform.position, Quaternion.identity) as GameObject;
+				Destroy (go, 1.5f);
 		}
 
 		void OnDestroy ()
@@ -48,7 +56,8 @@ public class ItemControl : MonoBehaviour
 						} else if (currentItemType == ItemType.SpringShoe) {
 								items.springShoe = true;
 						}
-
+				
+						playPickUpEffect ();
 						Destroy (gameObject);
 				}
 		}

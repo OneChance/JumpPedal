@@ -23,17 +23,21 @@ public class CameraFollow : MonoBehaviour
 
 
 				if (playerControl.grounded) {
-						curDistanceAdd = 0f;
+						curDistanceAdd = relDistance;
 						curSpeed = moveSpeed / 10f;
 
 				} else {
-						curDistanceAdd = 3f;
-                        curSpeed = moveSpeed / 10f;
-                        curSpeed *= Mathf.Abs(player.rigidbody2D.velocity.y*2);
-				}
-           
 
-				Vector3 newPos = new Vector3 (transform.position.x, player.transform.position.y - relDistance - curDistanceAdd, transform.position.z);
+						Vector3 boundTop = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
+						Vector3 boundBottom = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
+
+						curDistanceAdd = (boundTop.y - boundBottom.y) / 2 - player.renderer.bounds.size.y;
+						curSpeed = moveSpeed / 10f;
+
+						//curSpeed *= boundRight.y - player.transform.position.y;
+				}
+				Vector3 newPos = new Vector3 (transform.position.x, player.transform.position.y - curDistanceAdd, transform.position.z);
+
 				transform.position = Vector3.Lerp (transform.position, newPos, Time.deltaTime * curSpeed);
 		}
 
