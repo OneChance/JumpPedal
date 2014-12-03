@@ -36,7 +36,7 @@ public class ItemsCreate : MonoBehaviour
 
 		void StateCheck ()
 		{
-				if (player.rigidbody2D.velocity.y < -10f) {
+				if (player.rigidbody2D.velocity.y < -3.9f) {
 						createDirection = -1;	
 						//如果当前是急速下落状态，立刻销毁玩家上方的道具，以准备在下方生成补偿
 						if (currentItem != null && currentItem.transform.position.y > player.transform.position.y + cameraHeight) {
@@ -52,11 +52,7 @@ public class ItemsCreate : MonoBehaviour
 				boundLeft = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
 				boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 
-				float posX = Random.Range (boundLeft.x + itemWidth / 2, boundRight.x - itemWidth / 2);
-					
-				float offSetY = Random.Range (3f, 5f);
-
-				float posY = boundRight.y + offSetY * createDirection;
+				
 
 				int itemType = (int)(Random.value * 100 % 3);
 
@@ -74,11 +70,29 @@ public class ItemsCreate : MonoBehaviour
 						break;
 				}
 
-				posY = Mathf.Max (posY, 0);
+				Vector3 createPos;		
+				//检测创建位置是否有效
+				
+				do {					
+						createPos = GeneratePos ();
+						Debug.Log ("re create " + createPos);
+				} while(!PosCheck (createPos));
 
-				currentItem = Instantiate (createPrefab, new Vector3 (posX, posY, -1), Quaternion.identity) as GameObject;
-
+				currentItem = Instantiate (createPrefab, createPos, Quaternion.identity) as GameObject;
 				itemCount++;
+		}
 
+		Vector3 GeneratePos ()
+		{
+				float posX = Random.Range (boundLeft.x + itemWidth / 2, boundRight.x - itemWidth / 2);	
+				float offSetY = Random.Range (3f, 5f);	
+				float posY = boundRight.y + offSetY * createDirection;
+				posY = Mathf.Max (posY, 0);
+				return new Vector3 (posX, posY, -1);
+		}
+
+		bool PosCheck (Vector3 createPos)
+		{
+				return true;
 		}
 }

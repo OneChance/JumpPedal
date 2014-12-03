@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour
 		public PedalControl.PedalTypes currentPedalType; //当前选择的踏板类型
 		private PlayerAttribute pa;
 		private Transform myTransform;
-		private float moveSpeed = 30f; //玩家着陆后的横向移动速度
+		private float moveSpeed = 60f; //玩家着陆后的横向移动速度
 		private float onePedalWidth; //单个踏板的宽度
 		private float onePedalHeight; //单个踏板的高度
 		private Vector3 pedalStart;  //踏板创建的起始位置，也就是点击屏幕的位置
@@ -147,11 +147,11 @@ public class PlayerControl : MonoBehaviour
 				Vector3 boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 
 				if (dir < 0) {
-						if (Vector2.Distance (checkStart, new Vector2 (boundLeft.x, checkStart.y)) < (onePedalWidth / 2)) {
+						if (Vector2.Distance (checkStart, new Vector2 (boundLeft.x, checkStart.y)) < (onePedalWidth)) {
 								return true;
 						}
 				} else {
-						if (Vector2.Distance (checkStart, new Vector2 (boundRight.x, checkStart.y)) < (onePedalWidth / 2)) {
+						if (Vector2.Distance (checkStart, new Vector2 (boundRight.x, checkStart.y)) < (onePedalWidth)) {
 								return true;
 						}
 				}
@@ -161,16 +161,14 @@ public class PlayerControl : MonoBehaviour
 
 		bool SideCheck (Vector2 rayStart, int dir)
 		{
-
 				RaycastHit2D hit = Physics2D.Raycast (rayStart, Vector3.right * dir);
 				if (hit.transform != null) {
-						if (hit.transform.tag == Tags.pedal || hit.transform.tag == Tags.player) {
+						if (hit.transform.tag == Tags.pedal || hit.transform.tag == Tags.player || hit.transform.tag == Tags.item) {
 								if (Vector2.Distance (rayStart, new Vector2 (hit.transform.position.x, hit.transform.position.y)) < (3f / 2f * onePedalWidth)) {
 										return true;
 								}
 						}
 				}
-
 				return false;
 		}
 
@@ -240,19 +238,25 @@ public class PlayerControl : MonoBehaviour
 				GameObject go = Instantiate (groundEffect, effectPos, Quaternion.identity) as GameObject;
 				Destroy (go, 1.5f);
 		}
-	
+		
 		void GroundCheck ()
 		{
-				if (rigidbody2D.velocity.y != 0) {
-						grounded = false;							
-				} else {
-
-						if (grounded == false) {
-								PlayGroundEffect ();
+				//从角色脚下向下偏移0.1的位置，发出检测射线，以避免先检测到的是玩家
+				//左侧
+				Vector3 playerFootPosLeft = new Vector3 (myTransform.position.x - playerWidth / 2, myTransform.position.y - playerHeight / 2 - 0.1f, myTransform.position.z);
+				RaycastHit2D hitLeft = Physics2D.Raycast (playerFootPosLeft, Vector3.up * -1);
+				//右侧
+				Vector3 playerFootPosRight = new Vector3 (myTransform.position.x + playerWidth / 2, myTransform.position.y - playerHeight / 2 - 0.1f, myTransform.position.z);
+				RaycastHit2D hitRight = Physics2D.Raycast (playerFootPosRight, Vector3.up * -1);
+				if (hitLeft.transform.gameObject.tag == Tags.ground || hitLeft.transform.gameObject.tag == Tags.pedal || hitRight.transform.gameObject.tag == Tags.ground || hitRight.transform.gameObject.tag == Tags.pedal) {				
+						if (playerFootPosLeft.y - hitLeft.point.y == 0 || playerFootPosRight.y - hitRight.point.y == 0) {
+								if (!grounded) {
+										PlayGroundEffect ();
+								}			
+								grounded = true;						
+						} else {
+								grounded = false;
 						}
-				
-						grounded = true;
-						
 				}
 		}
 }

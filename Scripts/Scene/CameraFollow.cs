@@ -19,26 +19,22 @@ public class CameraFollow : MonoBehaviour
 		{
 
 				float curDistanceAdd = 0;
-				float curSpeed = 0;
-
+				float lerpSpeed = Time.deltaTime;
+			
 
 				if (playerControl.grounded) {
 						curDistanceAdd = relDistance;
-						curSpeed = moveSpeed / 10f;
-
+						lerpSpeed *= 5f;
 				} else {
-
 						Vector3 boundTop = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 						Vector3 boundBottom = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
 
 						curDistanceAdd = (boundTop.y - boundBottom.y) / 2 - player.renderer.bounds.size.y;
-						curSpeed = moveSpeed / 10f;
-
-						//curSpeed *= boundRight.y - player.transform.position.y;
+						lerpSpeed *= 10f;
 				}
 				Vector3 newPos = new Vector3 (transform.position.x, player.transform.position.y - curDistanceAdd, transform.position.z);
 
-				transform.position = Vector3.Lerp (transform.position, newPos, Time.deltaTime * curSpeed);
+				transform.position = Vector3.Lerp (transform.position, newPos, lerpSpeed);
 		}
 
 }
