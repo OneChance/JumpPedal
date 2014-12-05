@@ -15,6 +15,7 @@ public class ItemsCreate : MonoBehaviour
 		public GameObject currentItem;
 		private float cameraHeight;
 		private float itemWidth;
+		private PlayerControl playerControl;
 
 		void Awake ()
 		{
@@ -22,7 +23,8 @@ public class ItemsCreate : MonoBehaviour
 				boundLeft = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
 				boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 				cameraHeight = boundRight.y - boundLeft.y;
-				itemWidth = player.renderer.bounds.size.x;
+				itemWidth = wood.renderer.bounds.size.x;
+				playerControl = player.GetComponent<PlayerControl> ();
 		}
 
 		void Update ()
@@ -36,7 +38,7 @@ public class ItemsCreate : MonoBehaviour
 
 		void StateCheck ()
 		{
-				if (player.rigidbody2D.velocity.y < -3.9f) {
+				if (playerControl.fallQuick) {
 						createDirection = -1;	
 						//如果当前是急速下落状态，立刻销毁玩家上方的道具，以准备在下方生成补偿
 						if (currentItem != null && currentItem.transform.position.y > player.transform.position.y + cameraHeight) {
@@ -75,7 +77,6 @@ public class ItemsCreate : MonoBehaviour
 				
 				do {					
 						createPos = GeneratePos ();
-						Debug.Log ("re create " + createPos);
 				} while(!PosCheck (createPos));
 
 				currentItem = Instantiate (createPrefab, createPos, Quaternion.identity) as GameObject;

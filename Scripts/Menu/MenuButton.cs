@@ -53,6 +53,8 @@ public class MenuButton : MonoBehaviour
 				} else {
 						if (current == 1) {
 								preButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Back";
+						} else if (current == 2) {
+								nextButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Next";
 						}		
 						MoveCamera (-1);
 						current--;	

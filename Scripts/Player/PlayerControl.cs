@@ -16,12 +16,14 @@ public class PlayerControl : MonoBehaviour
 		private Vector3 pedalStart;  //踏板创建的起始位置，也就是点击屏幕的位置
 		private float pedalCheckOffset = 0.05f;  //踏板创建开始位置检测偏移，防止检测位置为自身
 		private WeatherControll weatherControll; //天气
-		private float playerWidth; //玩家模型宽度
-		private float playerHeight; //玩家模型高度
+		public float playerWidth; //玩家模型宽度
+		public float playerHeight; //玩家模型高度
 		private Items items; //玩家拥有的道具
 		private GameObject ground; //地面
 		public GameObject groundEffect;
-
+		private HashIDs hash;
+		private Animator anim;
+		public bool fallQuick;
 
 		enum ClickPos
 		{  
@@ -37,12 +39,15 @@ public class PlayerControl : MonoBehaviour
 				myTransform = transform;
 				onePedalWidth = ironPedal.renderer.bounds.size.x;
 				onePedalHeight = ironPedal.renderer.bounds.size.y;
-				playerWidth = myTransform.gameObject.renderer.bounds.size.x;
-				playerHeight = myTransform.gameObject.renderer.bounds.size.y;
+				playerWidth = 0.4f;
+				playerHeight = 0.4f;
 				weatherControll = GameObject.FindGameObjectWithTag (Tags.gameController).GetComponent<WeatherControll> ();
 				items = GetComponent<Items> ();
 				ground = GameObject.FindGameObjectWithTag (Tags.ground);
 				grounded = true;
+				hash = GameObject.FindGameObjectWithTag (Tags.gameController).GetComponent<HashIDs> ();
+				anim = GetComponent<Animator> ();
+				fallQuick = false;
 		}
 
 		void Update ()
@@ -58,6 +63,8 @@ public class PlayerControl : MonoBehaviour
 
 						JumpAndMove (clickPosition);		
 						
+				} else {
+						anim.SetInteger (hash.moveTypeInt, 0);
 				}
 
 				Vector3 clickUpPosition = InputMethod.GetClickUp ();
@@ -75,6 +82,7 @@ public class PlayerControl : MonoBehaviour
 				BoundCheck ();
 				FallDrag ();
 				GroundCheck ();
+				FallQuickCheck ();
 		}
 		
 		void FallDrag ()
@@ -188,8 +196,24 @@ public class PlayerControl : MonoBehaviour
 						}
 
 						if (jumpDirection.y >= 0) {
-								rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);			
-						}									
+								rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);		
+
+								if (jumpDirection.y == 0) {
+										anim.SetInteger (hash.moveTypeInt, (int)jumpDirection.x);
+								}
+						}				
+						
+						
+
+						if (jumpDirection.y > 0) {
+								if (jumpDirection.x < 0) {
+										anim.SetInteger (hash.jumpTypeInt, -1);
+								} else if (jumpDirection.x > 0) {
+										anim.SetInteger (hash.jumpTypeInt, 1);
+								} else {
+										anim.SetInteger (hash.jumpTypeInt, 0);
+								}
+						} 
 				}
 		}
 
@@ -241,22 +265,32 @@ public class PlayerControl : MonoBehaviour
 		
 		void GroundCheck ()
 		{
-				//从角色脚下向下偏移0.1的位置，发出检测射线，以避免先检测到的是玩家
 				//左侧
-				Vector3 playerFootPosLeft = new Vector3 (myTransform.position.x - playerWidth / 2, myTransform.position.y - playerHeight / 2 - 0.1f, myTransform.position.z);
+				Vector3 playerFootPosLeft = new Vector3 (myTransform.position.x - playerWidth / 2, myTransform.position.y - playerHeight / 2, myTransform.position.z);
 				RaycastHit2D hitLeft = Physics2D.Raycast (playerFootPosLeft, Vector3.up * -1);
 				//右侧
 				Vector3 playerFootPosRight = new Vector3 (myTransform.position.x + playerWidth / 2, myTransform.position.y - playerHeight / 2 - 0.1f, myTransform.position.z);
 				RaycastHit2D hitRight = Physics2D.Raycast (playerFootPosRight, Vector3.up * -1);
-				if (hitLeft.transform.gameObject.tag == Tags.ground || hitLeft.transform.gameObject.tag == Tags.pedal || hitRight.transform.gameObject.tag == Tags.ground || hitRight.transform.gameObject.tag == Tags.pedal) {				
-						if (playerFootPosLeft.y - hitLeft.point.y == 0 || playerFootPosRight.y - hitRight.point.y == 0) {
+				if (hitLeft.transform.gameObject.tag == Tags.ground || hitLeft.transform.gameObject.tag == Tags.pedal || hitRight.transform.gameObject.tag == Tags.ground || hitRight.transform.gameObject.tag == Tags.pedal) {
+						if (playerFootPosLeft.y - hitLeft.point.y <= 0 || playerFootPosRight.y - hitRight.point.y <= 0) {
 								if (!grounded) {
 										PlayGroundEffect ();
+										anim.SetInteger (hash.jumpTypeInt, 2);	
 								}			
-								grounded = true;						
+								grounded = true;								
 						} else {
 								grounded = false;
 						}
 				}
+		}
+
+		void FallQuickCheck ()
+		{
+				if (rigidbody2D.velocity.y < -3.9f) {
+						fallQuick = true;					
+				} else {
+						fallQuick = false;
+				}
+				anim.SetBool (hash.fallQuickBool, fallQuick);
 		}
 }
