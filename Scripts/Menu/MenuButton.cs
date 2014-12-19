@@ -13,7 +13,7 @@ public class MenuButton : MonoBehaviour
 		void Awake ()
 		{
 				if (nextButton != null) {
-						imageWidth = GameObject.Find ("Guide1").renderer.bounds.size.y;
+						imageWidth = GameObject.Find ("Guide1").renderer.bounds.size.x;
 						myCamera = Camera.main.transform;
 						current = 0;
 				}
@@ -32,14 +32,13 @@ public class MenuButton : MonoBehaviour
 		public void toNext ()
 		{
 				
-				if (current == 2) {
+				if (current == 1) {
 						Application.LoadLevel ("Main");
 				} else {
 						if (current == 0) {
 								preButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Pre";
-						} else if (current == 1) {
 								nextButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Start";
-						}					
+						}
 						MoveCamera (1);
 						current++;	
 				}
@@ -53,7 +52,6 @@ public class MenuButton : MonoBehaviour
 				} else {
 						if (current == 1) {
 								preButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Back";
-						} else if (current == 2) {
 								nextButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Next";
 						}		
 						MoveCamera (-1);
