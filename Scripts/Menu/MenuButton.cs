@@ -35,10 +35,6 @@ public class MenuButton : MonoBehaviour
 				if (current == 1) {
 						Application.LoadLevel ("Main");
 				} else {
-						if (current == 0) {
-								preButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Pre";
-								nextButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Start";
-						}
 						MoveCamera (1);
 						current++;	
 				}
@@ -50,10 +46,6 @@ public class MenuButton : MonoBehaviour
 				if (current == 0) {
 						Application.LoadLevel ("Start");
 				} else {
-						if (current == 1) {
-								preButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Back";
-								nextButton.GetComponentInChildren<UnityEngine.UI.Text> ().text = "Next";
-						}		
 						MoveCamera (-1);
 						current--;	
 				}				
