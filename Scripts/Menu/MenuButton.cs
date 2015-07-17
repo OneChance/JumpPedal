@@ -13,7 +13,7 @@ public class MenuButton : MonoBehaviour
 		void Awake ()
 		{
 				if (nextButton != null) {
-						imageWidth = GameObject.Find ("Guide1").renderer.bounds.size.x;
+						imageWidth = GameObject.Find ("Guide1").GetComponent<Renderer>().bounds.size.x;
 						myCamera = Camera.main.transform;
 						current = 0;
 				}

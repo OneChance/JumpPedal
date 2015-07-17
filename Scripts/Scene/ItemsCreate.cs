@@ -23,7 +23,7 @@ public class ItemsCreate : MonoBehaviour
 				boundLeft = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
 				boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 				cameraHeight = boundRight.y - boundLeft.y;
-				itemWidth = wood.renderer.bounds.size.x;
+				itemWidth = wood.GetComponent<Renderer>().bounds.size.x;
 				playerControl = player.GetComponent<PlayerControl> ();
 		}
 

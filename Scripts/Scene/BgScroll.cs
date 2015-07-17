@@ -17,9 +17,9 @@ public class BgScroll : MonoBehaviour
 			
 						Transform t = transform.GetChild (i);
 
-						skyHeight = t.gameObject.renderer.bounds.size.y;
+						skyHeight = t.gameObject.GetComponent<Renderer>().bounds.size.y;
 
-						if (t.renderer != null) {
+						if (t.GetComponent<Renderer>() != null) {
 								bgs.Add (transform.GetChild (i));	
 						}
 				}

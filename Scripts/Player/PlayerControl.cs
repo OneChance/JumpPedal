@@ -37,8 +37,8 @@ public class PlayerControl : MonoBehaviour
 		{
 				pa = GetComponent<PlayerAttribute> ();
 				myTransform = transform;
-				onePedalWidth = ironPedal.renderer.bounds.size.x;
-				onePedalHeight = ironPedal.renderer.bounds.size.y;
+				onePedalWidth = ironPedal.GetComponent<Renderer>().bounds.size.x;
+				onePedalHeight = ironPedal.GetComponent<Renderer>().bounds.size.y;
 				playerWidth = 0.4f;
 				playerHeight = 0.4f;
 				weatherControll = GameObject.FindGameObjectWithTag (Tags.gameController).GetComponent<WeatherControll> ();
@@ -87,10 +87,10 @@ public class PlayerControl : MonoBehaviour
 		
 		void FallDrag ()
 		{
-				if (rigidbody2D.velocity.y < 0) {
-						rigidbody2D.drag = 2.5f;
+				if (GetComponent<Rigidbody2D>().velocity.y < 0) {
+						GetComponent<Rigidbody2D>().drag = 2.5f;
 				} else {
-						rigidbody2D.drag = 0;
+						GetComponent<Rigidbody2D>().drag = 0;
 				}
 		}
 
@@ -142,7 +142,7 @@ public class PlayerControl : MonoBehaviour
 		bool ClickOnGroundCheck (Vector2 checkStart)
 		{
 				//创建踏板的位置不能低于地表高度+一块踏板的高度
-				float groundY = ground.renderer.bounds.size.y;
+				float groundY = ground.GetComponent<Renderer>().bounds.size.y;
 				if (checkStart.y < ground.transform.position.y + groundY / 2 + onePedalHeight) {
 						return true;
 				}
@@ -183,7 +183,7 @@ public class PlayerControl : MonoBehaviour
 		void WindMove ()
 		{
 				if (weatherControll.windLevel != 0) {
-						rigidbody2D.AddForce (Vector3.right * weatherControll.windLevel * weatherControll.windPower);
+						GetComponent<Rigidbody2D>().AddForce (Vector3.right * weatherControll.windLevel * weatherControll.windPower);
 				}			
 		}
 
@@ -192,11 +192,11 @@ public class PlayerControl : MonoBehaviour
 				Vector3 jumpDirection = GetJumpDirection (clickPosition);		
 				if (grounded) {		
 						if (jumpDirection.y > 0) {
-								rigidbody2D.AddForce (Vector3.up * jumpDirection.y * pa.jumpAbility);
+								GetComponent<Rigidbody2D>().AddForce (Vector3.up * jumpDirection.y * pa.jumpAbility);
 						}
 
 						if (jumpDirection.y >= 0) {
-								rigidbody2D.AddForce (Vector3.right * jumpDirection.x * moveSpeed);		
+								GetComponent<Rigidbody2D>().AddForce (Vector3.right * jumpDirection.x * moveSpeed);		
 
 								if (jumpDirection.y == 0) {
 										anim.SetInteger (hash.moveTypeInt, (int)jumpDirection.x);
@@ -226,10 +226,10 @@ public class PlayerControl : MonoBehaviour
 				Vector3 boundRight = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
 		
 				if (transform.position.x - playerWidth / 2 < boundLeft.x) {
-						rigidbody2D.AddForce (Vector3.right * moveSpeed * 0.5f);
+						GetComponent<Rigidbody2D>().AddForce (Vector3.right * moveSpeed * 0.5f);
 				}
 				if (transform.position.x + playerWidth / 2 > boundRight.x) {
-						rigidbody2D.AddForce (Vector3.left * moveSpeed * 0.5f);
+						GetComponent<Rigidbody2D>().AddForce (Vector3.left * moveSpeed * 0.5f);
 				}
 		}
 
@@ -286,7 +286,7 @@ public class PlayerControl : MonoBehaviour
 
 		void FallQuickCheck ()
 		{
-				if (rigidbody2D.velocity.y < -3.9f) {
+				if (GetComponent<Rigidbody2D>().velocity.y < -3.9f) {
 						fallQuick = true;					
 				} else {
 						fallQuick = false;
