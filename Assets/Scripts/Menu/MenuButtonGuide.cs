@@ -8,7 +8,7 @@ public class MenuButtonGuide : MonoBehaviour
 	private string[] guides = new string[]{"Guide1", "Guide2"};
 	private int index = 0;
 	private GameObject bg;
-	
+
 	void Start ()
 	{
 		bg = GameObject.FindGameObjectWithTag ("Bg");
@@ -16,6 +16,8 @@ public class MenuButtonGuide : MonoBehaviour
 	
 	public void toNext ()
 	{			
+		SoundManager.Select ();
+
 		index++;
 
 		if (index > 1) {
@@ -28,6 +30,9 @@ public class MenuButtonGuide : MonoBehaviour
 	
 	public void toPre ()
 	{
+
+		SoundManager.Select ();
+
 		index--;
 
 		if (index < 0) {

@@ -58,6 +58,7 @@ public class ItemControl : MonoBehaviour
 			}
 				
 			playPickUpEffect ();
+			SoundManager.PickUp ();
 			Destroy (gameObject);
 		}
 	}
