@@ -15,8 +15,6 @@ public class SoundManager : MonoBehaviour
 		bgMusic = transform.FindChild ("BgMusic").GetComponent<AudioSource> ();
 		soundsEffect = transform.FindChild ("ActEffect").GetComponent<AudioSource> ();
 		bgEffect = transform.FindChild ("BgEffect").GetComponent<AudioSource> ();
-
-
 	}
 
 	public static void PlayBg ()
