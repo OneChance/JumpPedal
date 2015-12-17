@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{6B6AB694-0D18-5953-D6FB-0FB5ED08448A}") = "JumpPedal", "Assembly-CSharp.csproj", "{BD33D260-2E25-865B-D4EA-73130AC1CEC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD33D260-2E25-865B-D4EA-73130AC1CEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD33D260-2E25-865B-D4EA-73130AC1CEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD33D260-2E25-865B-D4EA-73130AC1CEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD33D260-2E25-865B-D4EA-73130AC1CEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
