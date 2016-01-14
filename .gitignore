@@ -3,3 +3,5 @@ Library/
 /Assembly-CSharp.csproj
 /JumpPedal.sln
 /.DS_Store
+*.csproj
+Assembly-CSharp.csproj
